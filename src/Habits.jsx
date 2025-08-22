@@ -35,7 +35,7 @@ function HabitTracker() {
     if (!habit.trim() || !userId) return;
 
     const cleanTheme = theme.trim() === '' ? null : theme;
-    const cleanTarget = target.trim() === '' ? null : parseInt(target);
+    const cleanTarget = target.trim() === '' ? 1 : parseInt(target);
 
     if (isNaN(cleanTarget) || cleanTarget <=0) {
       console.error('Target must be a positive number');
