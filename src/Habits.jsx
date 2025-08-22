@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'; // <-- added
 function HabitTracker() {
   const [habit, setHabit] = useState('');
   const [theme, setTheme] = useState('');
+  const [target, setTarget] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [userId, setUserId] = useState(null);
   const navigate = useNavigate(); // <-- added
@@ -35,7 +36,7 @@ function HabitTracker() {
 
     const { data, error } = await supabase
       .from('habits')
-      .insert([{ habit, user_id: userId, theme }]);
+      .insert([{ habit, user_id: userId, theme, target }]);
 
     if (error) {
       console.error('Error adding habit:', error.message);
@@ -43,6 +44,7 @@ function HabitTracker() {
       console.log('Habit added:', data);
       setHabit('');
       setTheme('');
+      setTarget('');
       setShowConfirmation(true);
       setTimeout(() => setShowConfirmation(false), 2000);
     }
@@ -75,6 +77,14 @@ function HabitTracker() {
         value={theme}
         onChange={(e) => setTheme(e.target.value)}
         placeholder="e.g. Health, productivty (optional)"
+        style={{ marginRight: '10px' }}
+      />
+      <label htmlFor="target">Target (optional)</label>
+      <input
+        type="number"
+        value={target}
+        onChange={(e) => setTarget(e.target.value)}
+        placeholder="Number of times per day (optional)"
         style={{ marginRight: '10px' }}
       />
       <button onClick={handleAddHabit}>Add Habit</button>
