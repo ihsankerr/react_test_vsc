@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom'; // <-- added
+import { Link } from 'react-router-dom';
 
 // Define the main HabitTracker components
 function HabitTracker() {
@@ -105,6 +106,7 @@ function HabitTracker() {
       <button onClick={handleSignOut} style={{ marginLeft: '10px' }}>
         Sign Out
       </button>
+      <Link to="/view-habits">📋 View My Habits</Link>
       {showConfirmation && <p>Habit added!</p>}
     </div>
   );
