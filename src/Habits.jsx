@@ -1,9 +1,12 @@
+// Import necessary libraries and components
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom'; // <-- added
 
+// Define the main HabitTracker components
 function HabitTracker() {
   const [habit, setHabit] = useState('');
+  const [theme, setTheme] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [userId, setUserId] = useState(null);
   const navigate = useNavigate(); // <-- added
@@ -26,23 +29,26 @@ function HabitTracker() {
     fetchUser();
   }, []);
 
+  // Function to handle adding a new habit
   const handleAddHabit = async () => {
     if (!habit.trim() || !userId) return;
 
     const { data, error } = await supabase
       .from('habits')
-      .insert([{ habit, user_id: userId }]);
+      .insert([{ habit, user_id: userId, theme }]);
 
     if (error) {
       console.error('Error adding habit:', error.message);
     } else {
       console.log('Habit added:', data);
       setHabit('');
+      setTheme('');
       setShowConfirmation(true);
       setTimeout(() => setShowConfirmation(false), 2000);
     }
   };
 
+  // Function to handle user sign out
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -52,6 +58,7 @@ function HabitTracker() {
     }
   };
 
+  // Render the component UI
   return (
     <div style={{ padding: '20px' }}>
       <h2>Add a New Habit</h2>
@@ -60,6 +67,14 @@ function HabitTracker() {
         value={habit}
         onChange={(e) => setHabit(e.target.value)}
         placeholder="Enter a habit"
+        style={{ marginRight: '10px' }}
+      />
+      <label htmlFor="theme">Habit Theme (optional)</label>
+      <input
+        type="text"
+        value={theme}
+        onChange={(e) => setTheme(e.target.value)}
+        placeholder="e.g. Health, productivty (optional)"
         style={{ marginRight: '10px' }}
       />
       <button onClick={handleAddHabit}>Add Habit</button>
