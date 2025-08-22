@@ -95,6 +95,7 @@ function HabitTracker() {
       <label htmlFor="target">Target (optional)</label>
       <input
         type="number"
+        min={1}
         value={target}
         onChange={(e) => setTarget(e.target.value)}
         placeholder="Number of times per day (optional)"
