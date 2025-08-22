@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from './supabaseClient'; // import your client
 
+console.log("I'm running!");
 function HabitTracker() {
   const [habit, setHabit] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
