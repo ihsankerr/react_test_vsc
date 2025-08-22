@@ -34,9 +34,22 @@ function HabitTracker() {
   const handleAddHabit = async () => {
     if (!habit.trim() || !userId) return;
 
+    const cleanTheme = theme.trim() === '' ? null : theme;
+    const cleanTarget = target.trim() === '' ? null : parseInt(target);
+
+    if (isNaN(cleanTarget) || cleanTarget <=0) {
+      console.error('Target must be a positive number');
+      return;
+    } 
+
     const { data, error } = await supabase
       .from('habits')
-      .insert([{ habit, user_id: userId, theme, target }]);
+      .insert([{ 
+        habit, 
+        user_id: userId, 
+        theme: cleanTheme,
+        target: cleanTarget
+      }])
 
     if (error) {
       console.error('Error adding habit:', error.message);
