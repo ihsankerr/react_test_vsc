@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
+import { useNavigate } from 'react-router-dom'; // <-- added
 
 function HabitTracker() {
   const [habit, setHabit] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [userId, setUserId] = useState(null);
+  const navigate = useNavigate(); // <-- added
 
   // Get the current user when the component loads
   useEffect(() => {
@@ -29,7 +31,7 @@ function HabitTracker() {
 
     const { data, error } = await supabase
       .from('habits')
-      .insert([{ habit, user_id: userId }]); // assumes your table has a `user_id` column
+      .insert([{ habit, user_id: userId }]);
 
     if (error) {
       console.error('Error adding habit:', error.message);
@@ -46,7 +48,7 @@ function HabitTracker() {
     if (error) {
       console.error('Sign out error:', error.message);
     } else {
-      window.location.reload(); // refresh to redirect to login
+      navigate('/'); // 👈 redirect to login page after sign out
     }
   };
 
@@ -61,7 +63,9 @@ function HabitTracker() {
         style={{ marginRight: '10px' }}
       />
       <button onClick={handleAddHabit}>Add Habit</button>
-      <button onClick={handleSignOut} style={{ marginLeft: '10px' }}>Sign Out</button>
+      <button onClick={handleSignOut} style={{ marginLeft: '10px' }}>
+        Sign Out
+      </button>
       {showConfirmation && <p>Habit added!</p>}
     </div>
   );
