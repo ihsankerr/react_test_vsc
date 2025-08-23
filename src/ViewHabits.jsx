@@ -1,22 +1,42 @@
-// src/pages/ViewHabits.jsx
 import React, { useEffect, useState } from 'react';
-import supabase from '../supabase'; // adjust path as needed
-import { useUser } from '../UserContext'; // adjust if you have a user context
+import { supabase } from './supabaseClient'
 
 const ViewHabits = () => {
-  const { user } = useUser(); // assumes you're using a context for user
+  const [userId, setUserId] = useState(null);
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch the user ID on mount
   useEffect(() => {
-    if (!user) return;
+    const fetchUser = async () => {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+
+      if (error) {
+        console.error('Error fetching user:', error.message);
+        return;
+      }
+
+      if (user) {
+        setUserId(user.id);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  // Fetch habits when userId is available
+  useEffect(() => {
+    if (!userId) return;
 
     const fetchHabits = async () => {
       setLoading(true);
       const { data, error } = await supabase
         .from('habits')
         .select('habit, theme, target')
-        .eq('user_id', user.id);
+        .eq('user_id', userId);
 
       if (error) {
         console.error('Error fetching habits:', error.message);
@@ -28,9 +48,9 @@ const ViewHabits = () => {
     };
 
     fetchHabits();
-  }, [user]);
+  }, [userId]);
 
-  if (!user) return <p>Please log in to view your habits.</p>;
+  if (!userId) return <p>Please log in to view your habits.</p>;
 
   return (
     <div style={{ padding: '1rem' }}>
@@ -63,3 +83,4 @@ const ViewHabits = () => {
 };
 
 export default ViewHabits;
+
